@@ -144,6 +144,27 @@ struct list
         length++;
     }
 
+    // перегрузка функции pushBack для добавления в конец одного списка другой
+    void pushBack(list B)
+    {
+        for(int i = 0; i < B.length; i++)
+        {
+            Node* p = B[i];
+
+            if(isEmpty())
+            {
+                first = p;
+                last = p;
+                length++;
+                return;
+            }
+
+            last->next = p;
+            last = p;
+            length++;
+        }
+    }
+
     // Добавление элементов в начало
     void pushFront(int _val)
     {
@@ -191,10 +212,23 @@ struct list
         length++;
     }
 
+    // Перенос первого элемента в последний
+    void frontToBack()
+    {
+        if(isEmpty() || length == 1) return;
+
+        Node* afterFirst = first->next;
+
+        last->next = first;
+        last = first;
+        last->next = nullptr;
+        first = afterFirst;
+    }
+
     // Перенос последнего элемента в первый
     void backToFront()
     {
-        if(isEmpty()) return;
+        if(isEmpty() || length == 1) return;
 
         Node* secondToLast = first;
 
@@ -206,7 +240,46 @@ struct list
 
         last->next = first;
         first = last;
+        last = secondToLast;
         secondToLast->next = nullptr;
+    }
+
+    // Переворачивание списка
+    list reverse()
+    {
+        list B;
+
+        if(isEmpty()) return B;
+
+        Node* p = first;
+        while(p)
+        {
+            B.pushFront(p->val);
+            p = p->next;
+        }
+
+        return B;
+    }
+
+    void normalise()
+    {
+        if(isEmpty() || length == 1) return;
+
+        // Цикл прохода по всем элементам списка
+        for(Node* p = first; p; p = p->next)
+        {
+            // Цикл поиска дубликатов
+            for(Node* j = p; j->next;)
+            {
+                if(j->next->val == p->val)
+                {
+                    Node* t = j->next->next;
+                    delete j->next;
+                    j->next = t;
+                }
+                else j = j->next;
+            }
+        }
     }
 
     // Печать всего списка
@@ -221,8 +294,6 @@ struct list
             std::cout << p->val << ' ';
             p = p->next;
         }
-
-        std::cout << '\n';
     }
 
     // Список из всех элементов, кроме первого
@@ -244,7 +315,7 @@ struct list
 
 int main()
 {
-    // Создание и ввод связного списка длины N1
+    // Создание и ввод первого списка длины N1
     list A;
     int N1;
 
@@ -284,17 +355,41 @@ int main()
 
     
     // Сравнение списков
-    std::cout << "Списки " << (A == B ? "" : "не ") << "равны\n\n";
+    std::cout << "Списки " << (A == B ? "" : "не ") << "равны;\n\n";
 
     // Проверка на вхождение списка B в A
-    std::cout << "Второй список " << (A.contains(B) ? "" : "не ") << "входит в первый\n\n";
+    std::cout << "Второй список " << (A.contains(B) ? "" : "не ") << "входит в первый;\n\n";
 
     // Проверка первого списка на повторения
-    std::cout << "В первом списке " << (A.hasDuplicates() ? "есть повторения" : "нет повторений") << "\n\n";
+    std::cout << "В первом списке " << (A.hasDuplicates() ? "есть повторения" : "нет повторений") << ";\n\n";
+
+    // Перенос первого элемента списка A в конец
+    A.frontToBack();
+    std::cout << "Перенос первого элемента первого списка в конец:\n";
+    A.print();
+    std::cout << "\n\n";
 
     // Перенос последнего элемента списка A в начало
     A.backToFront();
     std::cout << "Перенос последнего элемента первого списка в начало:\n";
+    A.print();
+    std::cout << "\n\n";
+
+    // Добавление списка B в конец A
+    A.pushBack(B);
+    std::cout << "Добавление второго списка в конец первого:\n";
+    A.print();
+    std::cout << "\n\n";    
+
+    // Переворачивание списка
+    A = A.reverse();
+    std::cout << "Переворачивание первого списка:\n";
+    A.print();
+    std::cout << "\n\n";
+
+    // Нормализация списка
+    if(A.hasDuplicates()) A.normalise();
+    std::cout << "Убирание дубликатов из первого списка:\n";
     A.print();
     std::cout << "\n\n";
 }
