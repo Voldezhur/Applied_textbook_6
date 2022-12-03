@@ -31,7 +31,6 @@ struct list
         return first == nullptr;
     }    
 
-
     // Перегрузка оператора [] для доступа к элементам списка по индексу
     Node* operator[] (const int index)
     {
@@ -99,6 +98,34 @@ struct list
         return true;
     }
 
+    // Проверка на повторяющиеся элементы
+    bool hasDuplicates()
+    {
+        Node* p = first;
+
+        // Цикл прохождения по массиву
+        while(p)
+        {   
+            // Цикл подсчета количества одинаковых элементов
+            Node* j = first;
+            int count = 0;
+            while(j)
+            {
+                if(p->val == j->val)
+                {
+                    count++;
+                }
+
+                if(count > 1) return true;
+                j = j->next;
+            }
+
+            p = p->next;
+        }
+
+        return false;
+    }
+
     // Добавление элементов в конец
     void pushBack(int _val)
     {
@@ -162,6 +189,24 @@ struct list
         p->next = prev->next;
         prev->next = p;
         length++;
+    }
+
+    // Перенос последнего элемента в первый
+    void backToFront()
+    {
+        if(isEmpty()) return;
+
+        Node* secondToLast = first;
+
+        // Нахождение предпоследнего элемента
+        while(secondToLast->next != last)
+        {
+            secondToLast = secondToLast->next;
+        }
+
+        last->next = first;
+        first = last;
+        secondToLast->next = nullptr;
     }
 
     // Печать всего списка
@@ -243,4 +288,13 @@ int main()
 
     // Проверка на вхождение списка B в A
     std::cout << "Второй список " << (A.contains(B) ? "" : "не ") << "входит в первый\n\n";
+
+    // Проверка персого списка на повторения
+    std::cout << "В первом списке " << (A.hasDuplicates() ? "есть повторения" : "нет повторений") << "\n\n";
+
+    // Перенос последнего элемента списка A в начало
+    A.backToFront();
+    std::cout << "Перенос последнего элемента первого списка в начало:\n";
+    A.print();
+    std::cout << "\n\n";
 }
