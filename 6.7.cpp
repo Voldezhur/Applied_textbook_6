@@ -261,6 +261,7 @@ struct list
         return B;
     }
 
+    // Нормализация списка
     void normalise()
     {
         if(isEmpty() || length == 1) return;
