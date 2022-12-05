@@ -43,17 +43,19 @@ int main()
 
 
     // Вывод и удаление элементов из первой очереди
-    for(int i = 0; i < singleDigit.size(); i++)
+    int n = singleDigit.size();
+    for(int i = 0; i < n; i++)
     {
-        queueOutput << singleDigit.front();
+        queueOutput << singleDigit.front() << ' ';
         singleDigit.pop();
     }
     
     // Вывод и удаление элементов из второй очереди
-    for(int i = 0; i < twoDigit.size(); i++)
+    n = twoDigit.size();
+    for(int i = 0; i < n; i++)
     {
-        queueOutput << twoDigit.front();
-        singleDigit.pop();
+        queueOutput << twoDigit.front() << ' ';
+        twoDigit.pop();
     }
 
     // Закрытие файлов
